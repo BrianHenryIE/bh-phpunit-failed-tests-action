@@ -7,9 +7,17 @@
             "name": "BrianHenryIE"
         }
     ],
-    "require": {},
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        },
+        "platform": {
+            "php": "8.0"
+        }
+    },
     "require-dev": {
-        "phpunit/phpunit": "*"
+        "phpunit/phpunit": "^9.6"
     },
     "autoload": {
         "classmap": [

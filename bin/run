@@ -53,48 +53,40 @@ if (empty($failedTests)) {
     $output->set('failed-tests', '');
     $output->set('filter', '');
     $output->set('rerun-result', 'skip');
-} else {
-    $output->log('Found previously failed tests:');
-    foreach ($failedTests as $test) {
-        $output->log("  $test");
-    }
-
-    // Build PHPUnit --filter regex: strip namespace, keep Class::method
-    $filterParts = array_map(
-        static fn(string $test): string => preg_replace('/^.*\\\\/', '', $test),
-        $failedTests
-    );
-    $filter = implode('|', $filterParts);
-
-    $output->set('failed-tests', implode(',', $failedTests));
-    $output->set('filter', $filter);
-
-    if ($runTests) {
-        $output->group('Re-running previously failed tests');
-        $output->log("Filter: $filter");
-        $rerunExitCode = $runner->run($phpunitCommand, $filter, $phpunitArgs);
-        $output->endGroup();
-
-        if ($rerunExitCode === 0) {
-            $output->set('rerun-result', 'pass');
-            $output->log('Previously failed tests now pass.');
-        } else {
-            $output->set('rerun-result', 'fail');
-            $output->log('Some previously failed tests are still failing.');
-        }
-    } else {
-        $output->set('rerun-result', 'skip');
-    }
-}
-
-// ── Run the full test suite ────────────────────────────────────────────────
-
-if (!$runTests) {
     exit(0);
 }
 
-$output->group('Full test suite');
-$fullExitCode = $runner->run($phpunitCommand, '', $phpunitArgs);
+$output->log('Found previously failed tests:');
+foreach ($failedTests as $test) {
+    $output->log("  $test");
+}
+
+// Build PHPUnit --filter regex: strip namespace, keep Class::method
+$filterParts = array_map(
+    static fn(string $test): string => preg_replace('/^.*\\\\/', '', $test),
+    $failedTests
+);
+$filter = implode('|', $filterParts);
+
+$output->set('failed-tests', implode(',', $failedTests));
+$output->set('filter', $filter);
+
+if (!$runTests) {
+    $output->set('rerun-result', 'skip');
+    exit(0);
+}
+
+$output->group('Re-running previously failed tests');
+$output->log("Filter: $filter");
+$exitCode = $runner->run($phpunitCommand, $filter, $phpunitArgs);
 $output->endGroup();
 
-exit($fullExitCode);
+if ($exitCode === 0) {
+    $output->set('rerun-result', 'pass');
+    $output->log('Previously failed tests now pass.');
+} else {
+    $output->set('rerun-result', 'fail');
+    $output->log('Some previously failed tests are still failing.');
+}
+
+exit($exitCode);

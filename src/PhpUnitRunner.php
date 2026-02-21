@@ -11,6 +11,13 @@ class PhpUnitRunner
      */
     public function run(string $command, string $filter = '', string $args = ''): int
     {
+        passthru($this->buildCommand($command, $filter, $args), $exitCode);
+
+        return (int) $exitCode;
+    }
+
+    public function buildCommand(string $command, string $filter = '', string $args = ''): string
+    {
         $parts = [$command];
 
         if ($filter !== '') {
@@ -21,9 +28,6 @@ class PhpUnitRunner
             $parts[] = $args;
         }
 
-        $fullCommand = implode(' ', $parts);
-        passthru($fullCommand, $exitCode);
-
-        return (int) $exitCode;
+        return implode(' ', $parts);
     }
 }

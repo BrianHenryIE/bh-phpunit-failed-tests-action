@@ -1,5 +1,5 @@
-name: 'PHPUnit Failed Tests - Run Previous Failures First'
-description: 'Finds failed tests from recent CI runs and re-runs them first, giving faster feedback on whether previous failures are fixed.'
+name: 'PHPUnit Failed Tests - Re-run Previous Failures'
+description: 'Finds failed tests from recent CI runs and re-runs them, giving fast feedback on whether previous failures are fixed.'
 author: 'BrianHenryIE'
 
 inputs:
