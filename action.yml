@@ -49,4 +49,4 @@ runs:
         MAX_RUNS: ${{ inputs.max-runs }}
         PHPUNIT_COMMAND: ${{ inputs.phpunit-command }}
         PHPUNIT_ARGS: ${{ inputs.phpunit-args }}
-      run: php ${{ github.action_path }}/bin/run
+      run: php "$GITHUB_ACTION_PATH/bin/run"
