@@ -9,7 +9,7 @@ A composite GitHub Action that checks recent CI runs for failed PHPUnit tests an
 Add this above your existing PHPUnit CI step:
 
 ```yaml
-- name: Run previously workflows runs' failed tests first
+- name: Run previousl workflow runs' failed tests first
   uses: BrianHenryIE/bh-phpunit-failed-tests-action@main
 ```
 
@@ -35,14 +35,14 @@ The fact this is a "composite" GitHub Action means it runs under the same `setup
 ### Basic
 
 ```yaml
-- name: Run previously workflows runs' failed tests first
+- name: Run previousl workflow runs' failed tests first
   uses: BrianHenryIE/bh-phpunit-failed-tests-action@main
 ```
 
 ### With additional PHPUnit arguments
 
 ```yaml
-- name: Run previously workflows runs' failed tests first
+- name: Run previousl workflow runs' failed tests first
   uses: BrianHenryIE/bh-phpunit-failed-tests-action@main
   with:
     phpunit-command: vendor/bin/phpunit
@@ -61,7 +61,7 @@ The fact this is a "composite" GitHub Action means it runs under the same `setup
 ### Specify workflow and branch
 
 ```yaml
-- name: Run previously workflows runs' failed tests first
+- name: Run previousl workflow runs' failed tests first
   uses: BrianHenryIE/bh-phpunit-failed-tests-action@main
   with:
     workflow-name: unit-tests.yml
