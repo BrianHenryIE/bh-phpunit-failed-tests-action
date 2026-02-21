@@ -115,6 +115,19 @@ class LogParserTest extends TestCase
     /**
      * @test
      */
+    public function it_extracts_class_names_containing_digits(): void
+    {
+        $log = "1) BrianHenryIE\\Strauss\\Tests\\Issues\\StraussIssue49Test::test_local_symlinked_repositories_fail\nFailed.";
+
+        $this->assertSame(
+            ['BrianHenryIE\Strauss\Tests\Issues\StraussIssue49Test::test_local_symlinked_repositories_fail'],
+            $this->parser->extractFailedTests($log)
+        );
+    }
+
+    /**
+     * @test
+     */
     public function it_does_not_match_lines_without_a_numbered_prefix(): void
     {
         $log = "SomeClass::testMethod failed for other reasons";

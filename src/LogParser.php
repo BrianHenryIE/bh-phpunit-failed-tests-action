@@ -25,7 +25,7 @@ class LogParser
      */
     public function extractFailedTests(string $log): array
     {
-        preg_match_all('/\d+\)\s+([A-Za-z_\\\\]+::[A-Za-z_]+)/', $log, $matches);
+        preg_match_all('/\d+\)\s+([\w\\\\]+::\w+)/', $log, $matches);
 
         return $matches[1];
     }
