@@ -13,16 +13,22 @@ Add this above your existing PHPUnit CI step:
   uses: BrianHenryIE/bh-phpunit-failed-tests-action@main
 ```
 
+> ⚠️ Do not use `--stop-on-failure` on your main PHPUnit step
+>
+> Without it, all failing tests will be logged on the first run, otherwise there could be multiple tests failing that won't reveal themselves without multiple lengthy test runs and the fail-fast benefit of this action will be lost.
+
+## Why
+
+What prompted this was tests passing locally but failing in GitHub Actions in a test run that takes 30+ minutes to finish.
+
 ## How it works
 
 1. Queries the GitHub API for recent failed workflow runs, downloads their logs, and extracts failed test names from PHPUnit output (e.g. `Namespace\ClassName::testMethod`)
 2. Runs PHPUnit with `--filter` targeting only the previously failed tests
 
-I assume you're already have PHPUnit running in CI. What prompted this was tests passing locally but failing in GitHub Actions, in a test run that takes 30+ minutes to finish. Drop in this action above your existing step and it will quickly exit most of the time. The fact this is a "composite" GitHub Action means it runs under the same `setup-php` etc. as your workflow, so I (Claude) made it compatible back to PHP 7.4. 
+### Note 
 
-> ⚠️ Do not use `--stop-on-failure` on your main PHPUnit step. 
->
-> Without it, all failing tests will be logged on the first run, otherwise there could be multiple tests failing that won't reveal themselves without multiple lengthy test runs and the fail-fast benefit of this action will be lost.
+The fact this is a "composite" GitHub Action means it runs under the same `setup-php` etc. as your workflow, so I (through Claude) made it compatible back to PHP 7.4. 
 
 ## Usage
 
