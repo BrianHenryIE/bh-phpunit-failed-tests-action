@@ -2,44 +2,62 @@
 
 # PHPUnit Failed Tests Action
 
-A composite GitHub Action that checks recent CI runs for failed PHPUnit tests and re-runs them first, giving faster feedback on whether previous failures have been fixed.
+A composite GitHub Action that checks recent CI runs for failed PHPUnit tests and re-runs them first, giving fast feedback on whether previous failures have been fixed.
+
+## Quickstart
+
+Add this above your existing PHPUnit CI step:
+
+```yaml
+- name: Run previously workflows runs' failed tests first
+  uses: BrianHenryIE/bh-phpunit-failed-tests-action@main
+```
 
 ## How it works
 
-1. **Find failures**: Queries the GitHub API for recent failed workflow runs, downloads their logs, and extracts failed test names from PHPUnit output (e.g. `Namespace\ClassName::testMethod`)
-2. **Re-run failures first**: Runs PHPUnit with `--filter` targeting only the previously failed tests
-3. **Run full suite**: Runs the complete test suite regardless of the re-run result
+1. Queries the GitHub API for recent failed workflow runs, downloads their logs, and extracts failed test names from PHPUnit output (e.g. `Namespace\ClassName::testMethod`)
+2. Runs PHPUnit with `--filter` targeting only the previously failed tests
 
-This means you know within seconds whether the tests that failed last time are now passing, instead of waiting for the entire suite to reach those tests.
+I assume you're already have PHPUnit running in CI. What prompted this was tests passing locally but failing in GitHub Actions, in a test run that takes 30+ minutes to finish. Drop in this action above your existing step and it will quickly exit most of the time. The fact this is a "composite" GitHub Action means it runs under the same `setup-php` etc. as your workflow, so I (Claude) made it compatible back to PHP 7.4. 
+
+> ⚠️ Do not use `--stop-on-failure` on your main PHPUnit step. 
+>
+> Without it, all failing tests will be logged on the first run, otherwise there could be multiple tests failing that won't reveal themselves without multiple lengthy test runs and the fail-fast benefit of this action will be lost.
 
 ## Usage
 
 ### Basic
 
 ```yaml
-- name: Run tests (previously failed first)
+- name: Run previously workflows runs' failed tests first
   uses: BrianHenryIE/bh-phpunit-failed-tests-action@main
-  with:
-    phpunit-command: vendor/bin/phpunit
 ```
 
 ### With additional PHPUnit arguments
 
 ```yaml
-- name: Run tests (previously failed first)
+- name: Run previously workflows runs' failed tests first
   uses: BrianHenryIE/bh-phpunit-failed-tests-action@main
   with:
     phpunit-command: vendor/bin/phpunit
-    phpunit-args: '--stop-on-failure --order-by=random'
+    phpunit-args: '--dont-report-useless-tests --order-by=random'
+```
+
+### Without running PHPUnit again, just return the filter
+
+```yaml
+- name: Parse previously workflows runs' failed tests
+  uses: BrianHenryIE/bh-phpunit-failed-tests-action@main
+  with:
+    phpunit-command: false
 ```
 
 ### Specify workflow and branch
 
 ```yaml
-- name: Run tests (previously failed first)
+- name: Run previously workflows runs' failed tests first
   uses: BrianHenryIE/bh-phpunit-failed-tests-action@main
   with:
-    phpunit-command: vendor/bin/phpunit
     workflow-name: unit-tests.yml
     branch: main
     max-runs: '10'
@@ -51,8 +69,6 @@ This means you know within seconds whether the tests that failed last time are n
 - name: Run tests
   id: tests
   uses: BrianHenryIE/bh-phpunit-failed-tests-action@main
-  with:
-    phpunit-command: vendor/bin/phpunit
 
 - name: Report
   if: always()
@@ -62,6 +78,8 @@ This means you know within seconds whether the tests that failed last time are n
 ```
 
 ## Inputs
+
+Claude did all this, I haven't used these options myself!
 
 | Name | Description | Required | Default |
 |------|-------------|----------|---------|
