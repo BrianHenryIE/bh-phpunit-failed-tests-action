@@ -18,7 +18,7 @@ This means you know within seconds whether the tests that failed last time are n
 
 ```yaml
 - name: Run tests (previously failed first)
-  uses: BrianHenryIE/bh-phpunit-failed-tests-action@master
+  uses: BrianHenryIE/bh-phpunit-failed-tests-action@main
   with:
     phpunit-command: vendor/bin/phpunit
 ```
@@ -27,7 +27,7 @@ This means you know within seconds whether the tests that failed last time are n
 
 ```yaml
 - name: Run tests (previously failed first)
-  uses: BrianHenryIE/bh-phpunit-failed-tests-action@master
+  uses: BrianHenryIE/bh-phpunit-failed-tests-action@main
   with:
     phpunit-command: vendor/bin/phpunit
     phpunit-args: '--stop-on-failure --order-by=random'
@@ -37,11 +37,11 @@ This means you know within seconds whether the tests that failed last time are n
 
 ```yaml
 - name: Run tests (previously failed first)
-  uses: BrianHenryIE/bh-phpunit-failed-tests-action@master
+  uses: BrianHenryIE/bh-phpunit-failed-tests-action@main
   with:
     phpunit-command: vendor/bin/phpunit
-    workflow-name: main.yml
-    branch: master
+    workflow-name: unit-tests.yml
+    branch: main
     max-runs: '10'
 ```
 
@@ -50,7 +50,7 @@ This means you know within seconds whether the tests that failed last time are n
 ```yaml
 - name: Run tests
   id: tests
-  uses: BrianHenryIE/bh-phpunit-failed-tests-action@master
+  uses: BrianHenryIE/bh-phpunit-failed-tests-action@main
   with:
     phpunit-command: vendor/bin/phpunit
 
@@ -91,7 +91,3 @@ Failed asserting that ...
 ```
 
 It extracts the `Namespace\Class::method` pattern and builds a `--filter` regex for PHPUnit.
-
-## License
-
-GPL-2.0-or-later
