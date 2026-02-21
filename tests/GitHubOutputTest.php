@@ -18,6 +18,13 @@ class GitHubOutputTest extends TestCase
         }
     }
 
+    private function readTempFile(): string
+    {
+        $contents = file_get_contents($this->tempFile);
+        $this->assertIsString($contents, "Could not read temp file {$this->tempFile}");
+        return (string) $contents;
+    }
+
     // ── set() ─────────────────────────────────────────────────────────────────
 
     /** @test */
@@ -26,7 +33,7 @@ class GitHubOutputTest extends TestCase
         $output = new GitHubOutput($this->tempFile);
         $output->set('my-key', 'my-value');
 
-        $this->assertStringContainsString("my-key=my-value\n", file_get_contents($this->tempFile));
+        $this->assertStringContainsString("my-key=my-value\n", $this->readTempFile());
     }
 
     /** @test */
@@ -36,7 +43,7 @@ class GitHubOutputTest extends TestCase
         $output->set('key1', 'value1');
         $output->set('key2', 'value2');
 
-        $contents = file_get_contents($this->tempFile);
+        $contents = $this->readTempFile();
         $this->assertStringContainsString("key1=value1\n", $contents);
         $this->assertStringContainsString("key2=value2\n", $contents);
     }
@@ -46,9 +53,8 @@ class GitHubOutputTest extends TestCase
     {
         $output = new GitHubOutput(null);
 
-        // Should not throw or write anywhere.
+        $this->expectNotToPerformAssertions();
         $output->set('key', 'value');
-        $this->assertTrue(true);
     }
 
     /** @test */
@@ -59,7 +65,7 @@ class GitHubOutputTest extends TestCase
         try {
             $output = new GitHubOutput();
             $output->set('env-key', 'env-value');
-            $this->assertStringContainsString("env-key=env-value\n", file_get_contents($this->tempFile));
+            $this->assertStringContainsString("env-key=env-value\n", $this->readTempFile());
         } finally {
             putenv('GITHUB_OUTPUT');
         }

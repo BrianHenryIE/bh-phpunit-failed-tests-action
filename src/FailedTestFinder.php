@@ -19,27 +19,51 @@ class FailedTestFinder
             "/repos/$repo/actions/workflows/$workflow/runs?status=failure&branch=$branch&per_page=$maxRuns"
         );
 
-        if (!$data || empty($data['workflow_runs'])) {
+        if (!$data) {
+            return [];
+        }
+
+        $workflowRuns = $data['workflow_runs'] ?? null;
+        if (!is_array($workflowRuns)) {
             return [];
         }
 
         $failedTests = [];
 
-        foreach ($data['workflow_runs'] as $run) {
-            $runId = $run['id'];
-
-            $jobs = $this->api->get("/repos/$repo/actions/runs/$runId/jobs?filter=latest&per_page=100");
-
-            if (!$jobs || empty($jobs['jobs'])) {
+        foreach ($workflowRuns as $run) {
+            if (!is_array($run)) {
                 continue;
             }
 
-            foreach ($jobs['jobs'] as $job) {
-                if ($job['conclusion'] !== 'failure') {
+            $runId = $run['id'] ?? null;
+            if (!is_int($runId)) {
+                continue;
+            }
+
+            $jobs = $this->api->get("/repos/$repo/actions/runs/$runId/jobs?filter=latest&per_page=100");
+
+            if (!$jobs) {
+                continue;
+            }
+
+            $jobsList = $jobs['jobs'] ?? null;
+            if (!is_array($jobsList)) {
+                continue;
+            }
+
+            foreach ($jobsList as $job) {
+                if (!is_array($job)) {
                     continue;
                 }
 
-                $log = $this->api->getRaw("/repos/$repo/actions/jobs/{$job['id']}/logs");
+                $jobId     = $job['id'] ?? null;
+                $conclusion = $job['conclusion'] ?? null;
+
+                if (!is_int($jobId) || $conclusion !== 'failure') {
+                    continue;
+                }
+
+                $log = $this->api->getRaw("/repos/$repo/actions/jobs/$jobId/logs");
 
                 if ($log === null) {
                     continue;

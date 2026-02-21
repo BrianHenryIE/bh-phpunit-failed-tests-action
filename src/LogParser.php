@@ -14,6 +14,6 @@ class LogParser
     {
         preg_match_all('/\d+\)\s+([A-Za-z_\\\\]+::[A-Za-z_]+)/', $log, $matches);
 
-        return $matches[1] ?? [];
+        return $matches[1];
     }
 }

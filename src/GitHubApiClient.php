@@ -47,7 +47,7 @@ class GitHubApiClient implements GitHubApiClientInterface
         $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
-        if ($body === false || $statusCode >= 400) {
+        if (!is_string($body) || $statusCode >= 400) {
             return null;
         }
 
