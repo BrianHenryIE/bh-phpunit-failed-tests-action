@@ -35,7 +35,7 @@ class FailedTestFinderTest extends TestCase
     public function it_returns_empty_array_when_jobs_api_returns_null(): void
     {
         $this->api->method('get')->willReturnCallback(function (string $path) {
-            if (str_contains($path, '/actions/workflows/')) {
+            if (strpos($path, '/actions/workflows/') !== false) {
                 return ['workflow_runs' => [['id' => 1]]];
             }
             return null;
@@ -48,7 +48,7 @@ class FailedTestFinderTest extends TestCase
     public function it_returns_empty_array_when_no_jobs_failed(): void
     {
         $this->api->method('get')->willReturnCallback(function (string $path) {
-            if (str_contains($path, '/actions/workflows/')) {
+            if (strpos($path, '/actions/workflows/') !== false) {
                 return ['workflow_runs' => [['id' => 1]]];
             }
             return ['jobs' => [['id' => 10, 'conclusion' => 'success']]];
@@ -61,7 +61,7 @@ class FailedTestFinderTest extends TestCase
     public function it_skips_jobs_whose_log_returns_null(): void
     {
         $this->api->method('get')->willReturnCallback(function (string $path) {
-            if (str_contains($path, '/actions/workflows/')) {
+            if (strpos($path, '/actions/workflows/') !== false) {
                 return ['workflow_runs' => [['id' => 1]]];
             }
             return ['jobs' => [['id' => 10, 'conclusion' => 'failure']]];
@@ -82,7 +82,7 @@ class FailedTestFinderTest extends TestCase
         LOG;
 
         $this->api->method('get')->willReturnCallback(function (string $path) {
-            if (str_contains($path, '/actions/workflows/')) {
+            if (strpos($path, '/actions/workflows/') !== false) {
                 return ['workflow_runs' => [['id' => 1]]];
             }
             return ['jobs' => [['id' => 10, 'conclusion' => 'failure']]];
@@ -101,7 +101,7 @@ class FailedTestFinderTest extends TestCase
         $log = "1) Acme\Tests\FooTest::testSomething\nFailed.";
 
         $this->api->method('get')->willReturnCallback(function (string $path) {
-            if (str_contains($path, '/actions/workflows/')) {
+            if (strpos($path, '/actions/workflows/') !== false) {
                 return ['workflow_runs' => [['id' => 1], ['id' => 2]]];
             }
             return ['jobs' => [['id' => 10, 'conclusion' => 'failure']]];
@@ -121,7 +121,7 @@ class FailedTestFinderTest extends TestCase
         $logB = "1) Acme\Tests\BarTest::testTwo\nFailed.";
 
         $this->api->method('get')->willReturnCallback(function (string $path) {
-            if (str_contains($path, '/actions/workflows/')) {
+            if (strpos($path, '/actions/workflows/') !== false) {
                 return ['workflow_runs' => [['id' => 1]]];
             }
             return [
@@ -144,7 +144,7 @@ class FailedTestFinderTest extends TestCase
     public function it_only_fetches_logs_for_failed_jobs(): void
     {
         $this->api->method('get')->willReturnCallback(function (string $path) {
-            if (str_contains($path, '/actions/workflows/')) {
+            if (strpos($path, '/actions/workflows/') !== false) {
                 return ['workflow_runs' => [['id' => 1]]];
             }
             return [
@@ -172,7 +172,7 @@ class FailedTestFinderTest extends TestCase
         LOG;
 
         $this->api->method('get')->willReturnCallback(function (string $path) {
-            if (str_contains($path, '/actions/workflows/')) {
+            if (strpos($path, '/actions/workflows/') !== false) {
                 return ['workflow_runs' => [['id' => 1]]];
             }
             return ['jobs' => [['id' => 10, 'conclusion' => 'failure']]];

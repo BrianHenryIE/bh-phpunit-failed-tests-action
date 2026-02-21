@@ -1,4 +1,4 @@
-![PHP](https://img.shields.io/badge/PHP-8.0-777BB4?logo=php&logoColor=white) [![PHPUnit ](.github/coverage.svg)](https://brianhenryie.github.io/bh-wp-logger/) [![PHPStan ](https://img.shields.io/badge/PHPStan-Level%2010%20-2a5ea7.svg)](https://github.com/szepeviktor/phpstan-wordpress)
+![PHP](https://img.shields.io/badge/PHP-7.4-777BB4?logo=php&logoColor=white) [![PHPUnit ](.github/coverage.svg)](https://brianhenryie.github.io/bh-wp-logger/) [![PHPStan ](https://img.shields.io/badge/PHPStan-Level%2010%20-2a5ea7.svg)](https://github.com/szepeviktor/phpstan-wordpress)
 
 # PHPUnit Failed Tests Action
 

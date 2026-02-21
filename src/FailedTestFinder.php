@@ -2,10 +2,13 @@
 
 class FailedTestFinder
 {
-    public function __construct(
-        private GitHubApiClientInterface $api,
-        private LogParser $parser
-    ) {
+    private GitHubApiClientInterface $api;
+    private LogParser $parser;
+
+    public function __construct(GitHubApiClientInterface $api, LogParser $parser)
+    {
+        $this->api    = $api;
+        $this->parser = $parser;
     }
 
     /**

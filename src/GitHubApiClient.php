@@ -2,12 +2,12 @@
 
 class GitHubApiClient implements GitHubApiClientInterface
 {
+    private string $token;
     private string $baseUrl;
 
-    public function __construct(
-        private string $token,
-        string $baseUrl = 'https://api.github.com'
-    ) {
+    public function __construct(string $token, string $baseUrl = 'https://api.github.com')
+    {
+        $this->token   = $token;
         $this->baseUrl = rtrim($baseUrl, '/');
     }
 
