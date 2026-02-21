@@ -84,6 +84,37 @@ class PhpUnitRunnerTest extends TestCase
     /**
      * @test
      */
+    public function build_command_converts_forward_slashes_to_backslashes_on_windows(): void
+    {
+        $command = $this->runner->buildCommand('vendor/bin/phpunit', '', '', '\\');
+
+        $this->assertStringStartsWith('vendor\\bin\\phpunit', $command);
+    }
+
+    /**
+     * @test
+     */
+    public function build_command_does_not_convert_slashes_on_unix(): void
+    {
+        $command = $this->runner->buildCommand('vendor/bin/phpunit', '', '', '/');
+
+        $this->assertStringStartsWith('vendor/bin/phpunit', $command);
+    }
+
+    /**
+     * @test
+     */
+    public function build_command_only_converts_slashes_in_command_not_in_filter(): void
+    {
+        $command = $this->runner->buildCommand('vendor/bin/phpunit', 'Foo::testBar', '', '\\');
+
+        $this->assertStringContainsString('vendor\\bin\\phpunit', $command);
+        $this->assertStringContainsString('Foo::testBar', $command);
+    }
+
+    /**
+     * @test
+     */
     public function build_command_includes_all_parts_when_all_provided(): void
     {
         $command = $this->runner->buildCommand('vendor/bin/phpunit', 'FooTest::testBar', '--colors=always');

@@ -35,17 +35,27 @@ class PhpUnitRunner
     /**
      * Build the full shell command string without executing it.
      *
+     * On Windows (DIRECTORY_SEPARATOR === '\\') forward slashes in $command
+     * are converted to backslashes so that cmd.exe resolves the path correctly
+     * rather than treating slash-separated segments as command-line flags.
+     *
      * @param string $command The PHPUnit binary/command.
      * @param string $filter  Optional --filter regex. Empty skips the flag.
      * @param string $args    Optional extra arguments appended verbatim.
+     * @param string $dirSep  Directory separator; defaults to DIRECTORY_SEPARATOR.
      *
      * @return string The assembled shell command.
      */
     public function buildCommand(
         string $command,
         string $filter = '',
-        string $args = ''
+        string $args = '',
+        string $dirSep = DIRECTORY_SEPARATOR
     ): string {
+        if ($dirSep === '\\') {
+            $command = str_replace('/', '\\', $command);
+        }
+
         $parts = [$command];
 
         if ($filter !== '') {
