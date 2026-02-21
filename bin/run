@@ -3,6 +3,7 @@
 
 namespace BrianHenryIE\PHPUnitFailedTestsAction;
 
+require_once __DIR__ . '/../src/ActionContext.php';
 require_once __DIR__ . '/../src/GitHubApiClientInterface.php';
 require_once __DIR__ . '/../src/GitHubApiClient.php';
 require_once __DIR__ . '/../src/LogParser.php';
@@ -21,18 +22,17 @@ $phpunitCommand = (string) (getenv('PHPUNIT_COMMAND') ?: 'vendor/bin/phpunit');
 $runTests       = $phpunitCommand !== 'false';
 $phpunitArgs    = (string) (getenv('PHPUNIT_ARGS') ?: '');
 
-// Default workflow name: extract filename from GITHUB_WORKFLOW_REF
-// e.g. "owner/repo/.github/workflows/main.yml@refs/heads/main" → "main.yml"
+$context = new ActionContext();
+
+// Default workflow name: extract filename from GITHUB_WORKFLOW_REF.
 if ($workflowName === '') {
-    $workflowRef = (string) (getenv('GITHUB_WORKFLOW_REF') ?: '');
-    if (preg_match('/\/([^\/]+\.ya?ml)@/', $workflowRef, $m)) {
-        $workflowName = $m[1];
-    }
+    $workflowName = $context->getWorkflowName();
 }
 
-// Default branch
+// Default branch: use GITHUB_HEAD_REF for PR events (the actual branch name),
+// falling back to GITHUB_REF_NAME for push events.
 if ($branch === '') {
-    $branch = (string) (getenv('GITHUB_REF_NAME') ?: 'main');
+    $branch = $context->getBranch();
 }
 
 // ── Bootstrap ─────────────────────────────────────────────────────────────
