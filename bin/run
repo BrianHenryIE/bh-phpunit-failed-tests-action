@@ -1,6 +1,8 @@
 #!/usr/bin/env php
 <?php
 
+namespace BrianHenryIE\PHPUnitFailedTestsAction;
+
 require_once __DIR__ . '/../src/GitHubApiClientInterface.php';
 require_once __DIR__ . '/../src/GitHubApiClient.php';
 require_once __DIR__ . '/../src/LogParser.php';

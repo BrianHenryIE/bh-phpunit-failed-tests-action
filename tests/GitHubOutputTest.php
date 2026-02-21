@@ -1,5 +1,7 @@
 <?php
 
+namespace BrianHenryIE\PHPUnitFailedTestsAction;
+
 use PHPUnit\Framework\TestCase;
 
 class GitHubOutputTest extends TestCase
@@ -27,7 +29,9 @@ class GitHubOutputTest extends TestCase
 
     // ── set() ─────────────────────────────────────────────────────────────────
 
-    /** @test */
+    /**
+     * @test
+     */
     public function set_writes_name_equals_value_line_to_output_file(): void
     {
         $output = new GitHubOutput($this->tempFile);
@@ -36,7 +40,9 @@ class GitHubOutputTest extends TestCase
         $this->assertStringContainsString("my-key=my-value\n", $this->readTempFile());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function set_appends_multiple_outputs_to_the_file(): void
     {
         $output = new GitHubOutput($this->tempFile);
@@ -48,7 +54,9 @@ class GitHubOutputTest extends TestCase
         $this->assertStringContainsString("key2=value2\n", $contents);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function set_does_nothing_when_no_output_file_is_configured(): void
     {
         $output = new GitHubOutput(null);
@@ -57,7 +65,9 @@ class GitHubOutputTest extends TestCase
         $output->set('key', 'value');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function set_reads_output_file_path_from_environment_when_not_passed(): void
     {
         putenv("GITHUB_OUTPUT={$this->tempFile}");
@@ -73,7 +83,9 @@ class GitHubOutputTest extends TestCase
 
     // ── log() ─────────────────────────────────────────────────────────────────
 
-    /** @test */
+    /**
+     * @test
+     */
     public function log_prints_message_with_newline_to_stdout(): void
     {
         $output = new GitHubOutput(null);
@@ -84,7 +96,9 @@ class GitHubOutputTest extends TestCase
 
     // ── group() / endGroup() ──────────────────────────────────────────────────
 
-    /** @test */
+    /**
+     * @test
+     */
     public function group_prints_actions_group_marker(): void
     {
         $output = new GitHubOutput(null);
@@ -93,7 +107,9 @@ class GitHubOutputTest extends TestCase
         $output->group('My Section');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function end_group_prints_actions_endgroup_marker(): void
     {
         $output = new GitHubOutput(null);

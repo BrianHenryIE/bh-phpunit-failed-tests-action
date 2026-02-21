@@ -1,5 +1,7 @@
 <?php
 
+namespace BrianHenryIE\PHPUnitFailedTestsAction;
+
 use PHPUnit\Framework\TestCase;
 
 class PhpUnitRunnerTest extends TestCase
@@ -13,7 +15,9 @@ class PhpUnitRunnerTest extends TestCase
 
     // ── buildCommand ──────────────────────────────────────────────────────────
 
-    /** @test */
+    /**
+     * @test
+     */
     public function build_command_returns_bare_command_when_no_filter_or_args(): void
     {
         $this->assertSame(
@@ -22,7 +26,9 @@ class PhpUnitRunnerTest extends TestCase
         );
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function build_command_appends_filter_flag(): void
     {
         $command = $this->runner->buildCommand('vendor/bin/phpunit', 'FooTest::testBar');
@@ -31,7 +37,9 @@ class PhpUnitRunnerTest extends TestCase
         $this->assertStringContainsString('FooTest::testBar', $command);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function build_command_shell_escapes_the_filter_value(): void
     {
         // A filter with pipe characters must be shell-escaped so the shell
@@ -43,7 +51,9 @@ class PhpUnitRunnerTest extends TestCase
         $this->assertStringContainsString("'FooTest::testA|BarTest::testB'", $command);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function build_command_appends_extra_args(): void
     {
         $command = $this->runner->buildCommand('vendor/bin/phpunit', '', '--stop-on-failure');
@@ -51,7 +61,9 @@ class PhpUnitRunnerTest extends TestCase
         $this->assertStringContainsString('--stop-on-failure', $command);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function build_command_omits_filter_flag_when_filter_is_empty(): void
     {
         $command = $this->runner->buildCommand('vendor/bin/phpunit', '', '--stop-on-failure');
@@ -59,7 +71,9 @@ class PhpUnitRunnerTest extends TestCase
         $this->assertStringNotContainsString('--filter', $command);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function build_command_omits_extra_args_when_args_is_empty(): void
     {
         $command = $this->runner->buildCommand('vendor/bin/phpunit');
@@ -67,7 +81,9 @@ class PhpUnitRunnerTest extends TestCase
         $this->assertSame('vendor/bin/phpunit', $command);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function build_command_includes_all_parts_when_all_provided(): void
     {
         $command = $this->runner->buildCommand('vendor/bin/phpunit', 'FooTest::testBar', '--colors=always');
@@ -80,7 +96,9 @@ class PhpUnitRunnerTest extends TestCase
 
     // ── run ───────────────────────────────────────────────────────────────────
 
-    /** @test */
+    /**
+     * @test
+     */
     public function run_returns_zero_for_a_passing_command(): void
     {
         $exitCode = $this->runner->run('php -r "exit(0);"');
@@ -88,7 +106,9 @@ class PhpUnitRunnerTest extends TestCase
         $this->assertSame(0, $exitCode);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function run_returns_the_commands_exit_code_on_failure(): void
     {
         $exitCode = $this->runner->run('php -r "exit(2);"');

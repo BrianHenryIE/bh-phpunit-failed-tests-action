@@ -1,4 +1,4 @@
-![PHP](https://img.shields.io/badge/PHP-7.4-777BB4?logo=php&logoColor=white) [![PHPUnit ](.github/coverage.svg)](https://brianhenryie.github.io/bh-wp-logger/) [![PHPStan ](https://img.shields.io/badge/PHPStan-Level%2010%20-2a5ea7.svg)](https://github.com/szepeviktor/phpstan-wordpress)
+![PHP](https://img.shields.io/badge/PHP-7.4-777BB4?logo=php&logoColor=white) [![PHPUnit ](.github/coverage.svg)](https://brianhenryie.github.io/bh-wp-logger/) [![PHPStan ](https://img.shields.io/badge/PHPStan-Level%2010%20-2a5ea7.svg)](https://github.com/szepeviktor/phpstan-wordpress) [![PHPCS PEAR](https://img.shields.io/badge/PHPCS-PEAR%7CPSR%2012%20-4e9a06.svg)](https://pear.php.net/manual/en/standards.php)
 
 # PHPUnit Failed Tests Action
 

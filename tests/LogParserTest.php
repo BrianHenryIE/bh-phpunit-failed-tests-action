@@ -1,5 +1,7 @@
 <?php
 
+namespace BrianHenryIE\PHPUnitFailedTestsAction;
+
 use PHPUnit\Framework\TestCase;
 
 class LogParserTest extends TestCase
@@ -11,13 +13,17 @@ class LogParserTest extends TestCase
         $this->parser = new LogParser();
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_empty_array_for_empty_log(): void
     {
         $this->assertSame([], $this->parser->extractFailedTests(''));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_empty_array_when_no_failures_present(): void
     {
         $log = "OK (42 tests, 86 assertions)\n";
@@ -25,7 +31,9 @@ class LogParserTest extends TestCase
         $this->assertSame([], $this->parser->extractFailedTests($log));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_extracts_a_single_namespaced_failure(): void
     {
         $log = <<<LOG
@@ -41,7 +49,9 @@ class LogParserTest extends TestCase
         );
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_extracts_multiple_failures(): void
     {
         $log = <<<LOG
@@ -63,7 +73,9 @@ class LogParserTest extends TestCase
         );
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_extracts_a_non_namespaced_failure(): void
     {
         $log = "1) FooTest::testSomething\nFailed asserting that false is true.";
@@ -74,7 +86,9 @@ class LogParserTest extends TestCase
         );
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_handles_deeply_nested_namespaces(): void
     {
         $log = "1) Vendor\Package\Sub\Tests\FooTest::testBar\nFailed.";
@@ -85,7 +99,9 @@ class LogParserTest extends TestCase
         );
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_handles_underscores_in_class_and_method_names(): void
     {
         $log = "1) Acme_Tests_Foo_Test::test_something\nFailed.";
@@ -96,7 +112,9 @@ class LogParserTest extends TestCase
         );
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_does_not_match_lines_without_a_numbered_prefix(): void
     {
         $log = "SomeClass::testMethod failed for other reasons";
@@ -104,7 +122,9 @@ class LogParserTest extends TestCase
         $this->assertSame([], $this->parser->extractFailedTests($log));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_duplicates_when_the_same_test_appears_twice(): void
     {
         // Deduplication is the caller's responsibility; the parser returns raw matches.

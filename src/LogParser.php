@@ -1,5 +1,16 @@
 <?php
 
+/**
+ * PHPUnit log parser.
+ *
+ * @package brianhenryie/bh-phpunit-failed-tests-action
+ */
+
+namespace BrianHenryIE\PHPUnitFailedTestsAction;
+
+/**
+ * Extracts failed test names from PHPUnit console output.
+ */
 class LogParser
 {
     /**
@@ -7,6 +18,8 @@ class LogParser
      *
      * Matches PHPUnit's failure listing format:
      *   1) Namespace\ClassName::testMethodName
+     *
+     * @param string $log Raw PHPUnit console output.
      *
      * @return string[] Array of "Namespace\Class::method" strings.
      */

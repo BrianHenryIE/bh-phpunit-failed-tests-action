@@ -24,13 +24,13 @@
         "phpunit/phpunit": "^9.6"
     },
     "autoload": {
-        "classmap": [
-            "src/"
-        ]
+        "psr-4": {
+            "BrianHenryIE\\PHPUnitFailedTestsAction\\": "src/"
+        }
     },
     "autoload-dev": {
-        "classmap": [
-            "tests/"
-        ]
+        "psr-4": {
+            "BrianHenryIE\\PHPUnitFailedTestsAction\\": "tests/"
+        }
     }
 }
