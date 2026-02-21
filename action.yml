@@ -1,0 +1,52 @@
+name: 'PHPUnit Failed Tests - Run Previous Failures First'
+description: 'Finds failed tests from recent CI runs and re-runs them first, giving faster feedback on whether previous failures are fixed.'
+author: 'BrianHenryIE'
+
+inputs:
+  phpunit-command:
+    description: 'The PHPUnit command to run (e.g. "vendor/bin/phpunit"). Set to "false" to skip running tests and only output the list of previously failed tests.'
+    required: false
+    default: 'vendor/bin/phpunit'
+  phpunit-args:
+    description: 'Additional arguments to pass to PHPUnit (e.g. "--stop-on-failure").'
+    required: false
+    default: ''
+  workflow-name:
+    description: 'The workflow filename to check for previous failures (e.g. "main.yml"). Defaults to the current workflow.'
+    required: false
+    default: ''
+  branch:
+    description: 'The branch to check for previous failures. Defaults to the current branch.'
+    required: false
+    default: ''
+  max-runs:
+    description: 'Maximum number of recent runs to search for failures.'
+    required: false
+    default: '5'
+  token:
+    description: 'GitHub token for API access. Defaults to the workflow token.'
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  previously-failed:
+    description: 'Comma-separated list of previously failed test names (Class::method), usable with "phpunit --filter=:.'
+    value: ${{ steps.run-tests.outputs.failed-tests }}
+  rerun-result:
+    description: 'Result of re-running previously failed tests: "pass", "fail", or "skip" (if no previous failures found).'
+    value: ${{ steps.run-tests.outputs.rerun-result }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Run PHPUnit with previous failures first
+      id: run-tests
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.token }}
+        WORKFLOW_NAME: ${{ inputs.workflow-name }}
+        BRANCH: ${{ inputs.branch }}
+        MAX_RUNS: ${{ inputs.max-runs }}
+        PHPUNIT_COMMAND: ${{ inputs.phpunit-command }}
+        PHPUNIT_ARGS: ${{ inputs.phpunit-args }}
+      run: php ${{ github.action_path }}/bin/run

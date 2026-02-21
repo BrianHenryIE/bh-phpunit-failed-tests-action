@@ -1,0 +1,24 @@
+{
+    "name": "brianhenryie/bh-phpunit-failed-tests-action",
+    "description": "Finds failed tests from recent CI runs and re-runs them first, giving faster feedback on whether previous failures are fixed.",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "BrianHenryIE"
+        }
+    ],
+    "require": {},
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    },
+    "autoload": {
+        "classmap": [
+            "src/"
+        ]
+    },
+    "autoload-dev": {
+        "classmap": [
+            "tests/"
+        ]
+    }
+}
