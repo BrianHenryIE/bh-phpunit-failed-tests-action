@@ -52,12 +52,26 @@ The fact this is a "composite" GitHub Action means it runs under the same `setup
 ### Without running PHPUnit again, just return the filter
 
 ```yaml
-# Outputs: ${{ steps.failed_tests.outputs.previously-failed }}
+# Outputs:
+# * ${{ steps.failed_tests.outputs.failed-tests }} A comma separated list of the failed tests
+# * ${{ steps.failed_tests.outputs.filter }} to run the failed tests
+# * ${{ steps.failed_tests.outputs.filter-inverse }} to run the remaining tests
 - name: Parse previous workflows runs' failed tests
   id: failed_tests
   uses: BrianHenryIE/bh-phpunit-failed-tests-action@main
   with:
     phpunit-command: false
+
+- name: Run previously failing tests
+  if: ${{ steps.failed_tests.outputs.filter }}
+  env:
+    FILTER: ${{ steps.failed_tests.outputs.filter }}
+  run: echo "Running tests ${{ steps.failed_tests.outputs.failed-tests }}" && vendor/bin/phpunit --filter "$FILTER"
+
+- name: Run all tests except previous failures
+  env:
+    FILTER: ${{ steps.failed_tests.outputs.filter-inverse || '.*' }}
+  run: vendor/bin/phpunit --filter "$FILTER"
 ```
 
 ### Specify workflow and branch
@@ -81,7 +95,7 @@ The fact this is a "composite" GitHub Action means it runs under the same `setup
 - name: Report
   if: always()
   run: |
-    echo "Previously failed: ${{ steps.tests.outputs.previously-failed }}"
+    echo "Previously failed: ${{ steps.tests.outputs.failed-tests }}"
     echo "Re-run result: ${{ steps.tests.outputs.rerun-result }}"
 ```
 
@@ -102,7 +116,9 @@ Claude did all this, I haven't used these options myself!
 
 | Name | Description |
 |------|-------------|
-| `previously-failed` | Comma-separated list of failed test names |
+| `failed-tests` | Comma-separated list of previously failed test names (`Namespace\Class::method`) |
+| `filter` | PHPUnit `--filter` regex matching the previously failed tests |
+| `filter-inverse` | PHPUnit `--filter` regex matching everything except the previously failed tests |
 | `rerun-result` | `pass`, `fail`, or `skip` |
 
 ## How test names are extracted
