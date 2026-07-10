@@ -52,12 +52,21 @@ The fact this is a "composite" GitHub Action means it runs under the same `setup
 ### Without running PHPUnit again, just return the filter
 
 ```yaml
-# Outputs: ${{ steps.failed_tests.outputs.previously-failed }}
+# Outputs:
+# * ${{ steps.failed_tests.outputs.previously-failed }} to run the failed tests
+# * ${{ steps.failed_tests.outputs.previously-failed-inverse }} to run the remaining tests
 - name: Parse previous workflows runs' failed tests
   id: failed_tests
   uses: BrianHenryIE/bh-phpunit-failed-tests-action@main
   with:
     phpunit-command: false
+
+- name: Run previously failing tests
+  run: vendor/bin/phpunit --filter '${{ steps.failed_tests.outputs.previously-failed }}'
+  if: ${{ steps.failed_tests.outputs.previously-failed }}
+
+- name: Run all tests except previous failures
+  run: vendor/bin/phpunit --filter '${{ steps.failed_tests.outputs.previously-failed-inverse || '.*' }}'
 ```
 
 ### Specify workflow and branch
@@ -103,6 +112,7 @@ Claude did all this, I haven't used these options myself!
 | Name | Description |
 |------|-------------|
 | `previously-failed` | Comma-separated list of failed test names |
+| `previously-failed-inverse` | PHPUnit `--filter` regex matching everything except the previously failed tests |
 | `rerun-result` | `pass`, `fail`, or `skip` |
 
 ## How test names are extracted

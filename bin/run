@@ -53,6 +53,7 @@ $failedTests = $finder->find($repo, $workflowName, $branch, $maxRuns);
 if (empty($failedTests)) {
     $output->log('No previously failed tests found.');
     $output->set('failed-tests', '');
+    $output->set('failed-tests-inverse', '.*');
     $output->set('filter', '');
     $output->set('rerun-result', 'skip');
     exit(0);
@@ -72,6 +73,15 @@ $filter = implode('|', $filterParts);
 
 $output->set('failed-tests', implode(',', $failedTests));
 $output->set('filter', $filter);
+
+// Build the inverse --filter regex: a negative lookahead over the full
+// namespaced test names, so PHPUnit runs everything except previous failures.
+$inverseParts = array_map(
+    static fn(string $test): string => preg_quote($test, '/'),
+    $failedTests
+);
+$inverse = '^(?!.*(' . implode('|', $inverseParts) . ')).*$';
+$output->set('failed-tests-inverse', $inverse);
 
 if (!$runTests) {
     $output->set('rerun-result', 'skip');
