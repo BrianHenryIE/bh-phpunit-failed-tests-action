@@ -26,6 +26,8 @@ What prompted this was tests passing locally but failing in GitHub Actions in a 
 1. Queries the GitHub API for recent failed workflow runs, downloads their logs, and extracts failed test names from PHPUnit output (e.g. `Namespace\ClassName::testMethod`)
 2. Runs PHPUnit with `--filter` targeting only the previously failed tests
 
+Only failures from the **same job** are collected. The current job is auto-detected, so in a matrix build a test that failed under PHP 7.4 is not re-run in the PHP 8.4 leg. Override the matching with the `job-name` input if auto-detection doesn't find the right job.
+
 ### Note 
 
 The fact this is a "composite" GitHub Action means it runs under the same `setup-php` etc. as your workflow, so I (through Claude) made it compatible back to PHP 7.4. 
@@ -110,6 +112,7 @@ Claude did all this, I haven't used these options myself!
 | `workflow-name` | Workflow file to check for failures | No | Current workflow |
 | `branch` | Branch to check for failures | No | Default branch |
 | `max-runs` | Max recent runs to search | No | `5` |
+| `job-name` | Job name to match against previous runs (e.g. a matrix leg like `test (8.4)`) so only failures from the same configuration are collected | No | Auto-detected |
 | `token` | GitHub token for API access | No | `${{ github.token }}` |
 
 ## Outputs

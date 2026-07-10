@@ -23,6 +23,10 @@ inputs:
     description: 'Maximum number of recent runs to search for failures.'
     required: false
     default: '5'
+  job-name:
+    description: 'The job name to match against previous runs (e.g. a matrix leg like "test (8.4)"), so only failures from the same configuration are collected. Defaults to auto-detecting the current job.'
+    required: false
+    default: ''
   token:
     description: 'GitHub token for API access. Defaults to the workflow token.'
     required: false
@@ -53,6 +57,7 @@ runs:
         WORKFLOW_NAME: ${{ inputs.workflow-name }}
         BRANCH: ${{ inputs.branch }}
         MAX_RUNS: ${{ inputs.max-runs }}
+        JOB_NAME: ${{ inputs.job-name }}
         PHPUNIT_COMMAND: ${{ inputs.phpunit-command }}
         PHPUNIT_ARGS: ${{ inputs.phpunit-args }}
       run: php "$GITHUB_ACTION_PATH/bin/run"

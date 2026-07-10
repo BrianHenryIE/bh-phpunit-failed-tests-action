@@ -236,4 +236,83 @@ class FailedTestFinderTest extends TestCase
 
         $this->finder->find('owner/repo', 'ci.yml', 'develop', 3);
     }
+
+    /**
+     * @test
+     */
+    public function it_only_collects_failures_from_the_matching_job_name(): void
+    {
+        $this->api->method('get')->willReturnCallback(
+            function (string $path) {
+                if (strpos($path, '/actions/workflows/') !== false) {
+                    return ['workflow_runs' => [['id' => 1]]];
+                }
+                return [
+                'jobs' => [
+                    ['id' => 10, 'conclusion' => 'failure', 'name' => 'test (7.4)'],
+                    ['id' => 20, 'conclusion' => 'failure', 'name' => 'test (8.4)'],
+                ],
+                ];
+            }
+        );
+
+        // Only the matching job's log should be fetched.
+        $this->api->expects($this->once())
+            ->method('getRaw')
+            ->with('/repos/owner/repo/actions/jobs/20/logs')
+            ->willReturn("1) Acme\Tests\BarTest::testUnderEightFour\nFailed.");
+
+        $this->assertSame(
+            ['Acme\Tests\BarTest::testUnderEightFour'],
+            $this->finder->find('owner/repo', 'main.yml', 'main', 5, 'test (8.4)')
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function it_resolves_the_current_job_name_by_runner(): void
+    {
+        $this->api->expects($this->once())
+            ->method('get')
+            ->with('/repos/owner/repo/actions/runs/99/jobs?per_page=100')
+            ->willReturn(
+                [
+                'jobs' => [
+                    ['name' => 'test (7.4)', 'runner_name' => 'Runner A', 'status' => 'in_progress'],
+                    ['name' => 'test (8.4)', 'runner_name' => 'Runner B', 'status' => 'in_progress'],
+                ],
+                ]
+            );
+
+        $this->assertSame('test (8.4)', $this->finder->getCurrentJobName('owner/repo', 99, 'Runner B'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_empty_job_name_when_the_runner_does_not_match(): void
+    {
+        $this->api->method('get')->willReturn(
+            [
+            'jobs' => [
+                ['name' => 'test (7.4)', 'runner_name' => 'Runner A', 'status' => 'in_progress'],
+            ],
+            ]
+        );
+
+        $this->assertSame('', $this->finder->getCurrentJobName('owner/repo', 99, 'Runner Z'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_does_not_call_the_api_without_a_repo_run_id_or_runner_name(): void
+    {
+        $this->api->expects($this->never())->method('get');
+
+        $this->assertSame('', $this->finder->getCurrentJobName('owner/repo', 0, 'Runner B'));
+        $this->assertSame('', $this->finder->getCurrentJobName('owner/repo', 99, ''));
+        $this->assertSame('', $this->finder->getCurrentJobName('', 99, 'Runner B'));
+    }
 }

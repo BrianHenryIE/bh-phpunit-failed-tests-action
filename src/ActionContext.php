@@ -34,6 +34,32 @@ class ActionContext
     }
 
     /**
+     * Return the current workflow run ID (GITHUB_RUN_ID).
+     *
+     * Used to look up the current job and match the same matrix leg in
+     * previous runs.
+     *
+     * @return int Run ID, or 0 if the environment is not set.
+     */
+    public function getRunId(): int
+    {
+        return (int) (getenv('GITHUB_RUN_ID') ?: '0');
+    }
+
+    /**
+     * Return the name of the runner executing the current job (RUNNER_NAME).
+     *
+     * Concurrent matrix jobs run on distinct runners, so the runner name
+     * identifies which job in the current run is "this" one.
+     *
+     * @return string Runner name, or empty string if not set.
+     */
+    public function getRunnerName(): string
+    {
+        return (string) (getenv('RUNNER_NAME') ?: '');
+    }
+
+    /**
      * Return the workflow filename derived from GITHUB_WORKFLOW_REF.
      *
      * Extracts the filename from a ref such as:
