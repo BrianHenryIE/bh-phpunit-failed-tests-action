@@ -80,7 +80,7 @@ $inverseParts = array_map(
     static fn(string $test): string => preg_quote($test, '/'),
     $failedTests
 );
-$inverse = '^(?!.*(' . implode('|', $inverseParts) . ')).*$';
+$inverse = '^(?!(?:' . implode('|', $inverseParts) . ')(?:$|[^a-zA-Z0-9_])).*$';
 $output->set('failed-tests-inverse', $inverse);
 
 if (!$runTests) {
