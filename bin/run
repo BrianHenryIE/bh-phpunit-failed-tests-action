@@ -21,6 +21,7 @@ $maxRuns        = (int)    (getenv('MAX_RUNS') ?: '5');
 $phpunitCommand = (string) (getenv('PHPUNIT_COMMAND') ?: 'vendor/bin/phpunit');
 $runTests       = $phpunitCommand !== 'false';
 $phpunitArgs    = (string) (getenv('PHPUNIT_ARGS') ?: '');
+$jobName        = (string) (getenv('JOB_NAME') ?: '');
 
 $context = new ActionContext();
 
@@ -42,11 +43,20 @@ $api    = new GitHubApiClient($token);
 $finder = new FailedTestFinder($api, new LogParser());
 $runner = new PhpUnitRunner();
 
+// Restrict the search to the current matrix leg. When no job name is given,
+// auto-detect the current job so failures from other legs (e.g. a different
+// PHP version) are not collected. Resolves to '' when it cannot be determined,
+// in which case failures from all jobs are collected.
+if ($jobName === '') {
+    $jobName = $finder->getCurrentJobName($repo, $context->getRunId(), $context->getRunnerName());
+}
+
 // ── Find previously failed tests ───────────────────────────────────────────
 
-$output->log("Searching for failed tests in workflow=$workflowName branch=$branch max_runs=$maxRuns");
+$jobScope = $jobName !== '' ? " job=\"$jobName\"" : '';
+$output->log("Searching for failed tests in workflow=$workflowName branch=$branch max_runs=$maxRuns$jobScope");
 
-$failedTests = $finder->find($repo, $workflowName, $branch, $maxRuns);
+$failedTests = $finder->find($repo, $workflowName, $branch, $maxRuns, $jobName);
 
 // ── Re-run previously failed tests (if any) ───────────────────────────────
 
