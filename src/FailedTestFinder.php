@@ -56,7 +56,7 @@ class FailedTestFinder
         int $runId,
         string $runnerName
     ): string {
-        if ($runId <= 0 || $runnerName === '') {
+        if ($repo === '' || $runId <= 0 || $runnerName === '') {
             return '';
         }
 

@@ -307,11 +307,12 @@ class FailedTestFinderTest extends TestCase
     /**
      * @test
      */
-    public function it_does_not_call_the_api_without_a_run_id_or_runner_name(): void
+    public function it_does_not_call_the_api_without_a_repo_run_id_or_runner_name(): void
     {
         $this->api->expects($this->never())->method('get');
 
         $this->assertSame('', $this->finder->getCurrentJobName('owner/repo', 0, 'Runner B'));
         $this->assertSame('', $this->finder->getCurrentJobName('owner/repo', 99, ''));
+        $this->assertSame('', $this->finder->getCurrentJobName('', 99, 'Runner B'));
     }
 }
