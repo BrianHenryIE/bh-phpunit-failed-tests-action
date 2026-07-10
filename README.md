@@ -53,6 +53,7 @@ The fact this is a "composite" GitHub Action means it runs under the same `setup
 
 ```yaml
 # Outputs:
+# * ${{ steps.failed_tests.outputs.failed-tests }} A comma separated list of the failed tests
 # * ${{ steps.failed_tests.outputs.filter }} to run the failed tests
 # * ${{ steps.failed_tests.outputs.filter-inverse }} to run the remaining tests
 - name: Parse previous workflows runs' failed tests
@@ -62,11 +63,15 @@ The fact this is a "composite" GitHub Action means it runs under the same `setup
     phpunit-command: false
 
 - name: Run previously failing tests
-  run: vendor/bin/phpunit --filter '${{ steps.failed_tests.outputs.filter }}'
   if: ${{ steps.failed_tests.outputs.filter }}
+  env:
+    FILTER: ${{ steps.failed_tests.outputs.filter }}
+  run: echo "Running tests ${{ steps.failed_tests.outputs.failed-tests }}" && vendor/bin/phpunit --filter "$FILTER"
 
 - name: Run all tests except previous failures
-  run: vendor/bin/phpunit --filter '${{ steps.failed_tests.outputs.filter-inverse }}'
+  env:
+    FILTER: ${{ steps.failed_tests.outputs.filter-inverse || '.*' }}
+  run: vendor/bin/phpunit --filter "$FILTER"
 ```
 
 ### Specify workflow and branch
