@@ -53,8 +53,8 @@ $failedTests = $finder->find($repo, $workflowName, $branch, $maxRuns);
 if (empty($failedTests)) {
     $output->log('No previously failed tests found.');
     $output->set('failed-tests', '');
-    $output->set('failed-tests-inverse', '.*');
     $output->set('filter', '');
+    $output->set('filter-inverse', '.*');
     $output->set('rerun-result', 'skip');
     exit(0);
 }
@@ -81,7 +81,7 @@ $inverseParts = array_map(
     $failedTests
 );
 $inverse = '^(?!(?:' . implode('|', $inverseParts) . ')(?:$|[^a-zA-Z0-9_])).*$';
-$output->set('failed-tests-inverse', $inverse);
+$output->set('filter-inverse', $inverse);
 
 if (!$runTests) {
     $output->set('rerun-result', 'skip');

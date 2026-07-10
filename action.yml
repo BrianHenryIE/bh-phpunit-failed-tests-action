@@ -29,12 +29,15 @@ inputs:
     default: ${{ github.token }}
 
 outputs:
-  previously-failed:
-    description: 'Comma-separated list of previously failed test names (Class::method), usable with "phpunit --filter=:.'
+  failed-tests:
+    description: 'Comma-separated list of previously failed test names (Namespace\Class::method). Empty when there were no previous failures.'
     value: ${{ steps.run-tests.outputs.failed-tests }}
-  previously-failed-inverse:
+  filter:
+    description: 'PHPUnit --filter regex matching the previously failed tests. Empty when there were no previous failures.'
+    value: ${{ steps.run-tests.outputs.filter }}
+  filter-inverse:
     description: 'PHPUnit --filter regex that excludes the previously failed tests (runs everything except them). Match-all regex .* when there were no previous failures.'
-    value: ${{ steps.run-tests.outputs.failed-tests-inverse }}
+    value: ${{ steps.run-tests.outputs.filter-inverse }}
   rerun-result:
     description: 'Result of re-running previously failed tests: "pass", "fail", or "skip" (if no previous failures found).'
     value: ${{ steps.run-tests.outputs.rerun-result }}
