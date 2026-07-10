@@ -33,7 +33,7 @@ outputs:
     description: 'Comma-separated list of previously failed test names (Class::method), usable with "phpunit --filter=:.'
     value: ${{ steps.run-tests.outputs.failed-tests }}
   previously-failed-inverse:
-    description: 'PHPUnit --filter regex that excludes the previously failed tests (runs everything except them). Empty when there were no previous failures.'
+    description: 'PHPUnit --filter regex that excludes the previously failed tests (runs everything except them). Match-all regex .* when there were no previous failures.'
     value: ${{ steps.run-tests.outputs.failed-tests-inverse }}
   rerun-result:
     description: 'Result of re-running previously failed tests: "pass", "fail", or "skip" (if no previous failures found).'
